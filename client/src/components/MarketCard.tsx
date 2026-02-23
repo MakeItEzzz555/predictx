@@ -1,6 +1,14 @@
 import { Clock, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 interface MarketCardProps {
   id: number;
@@ -12,7 +20,7 @@ interface MarketCardProps {
   volume: string;
   closesAt: Date | string;
   isTrending?: boolean;
-  priceHistory?: Array<{ yesPrice: string; recordedAt: Date | string }>;
+  priceHistory?: Array<{ yesPrice: string; noPrice?: string; recordedAt: Date | string }>;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -61,11 +69,30 @@ export default function MarketCard({
   const np = parseFloat(noPrice);
   const catColor = CATEGORY_COLORS[category] ?? "oklch(0.78 0.18 195)";
 
-  // Build order book data (buy/sell depth visualization)
-  const orderBookData = [
-    { name: "YES", value: yp, fill: "oklch(0.75 0.18 145)" },
-    { name: "NO", value: np, fill: "oklch(0.65 0.22 15)" },
-  ];
+  // Build detailed price chart data (same as MarketDetail)
+  const chartData =
+    priceHistory.length > 0
+      ? priceHistory.map((p) => {
+          const d = p.recordedAt instanceof Date ? p.recordedAt : new Date(p.recordedAt);
+          const y = parseFloat(p.yesPrice);
+          return {
+            time: d.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            }),
+            yes: y,
+            no: 100 - y,
+          };
+        })
+      : Array.from({ length: 30 }, (_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (30 - i));
+          return {
+            time: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+            yes: 50 + Math.sin(i * 0.3) * 15 + (Math.random() - 0.5) * 10,
+            no: 50 - Math.sin(i * 0.3) * 15 - (Math.random() - 0.5) * 10,
+          };
+        });
 
   return (
     <Link href={`/markets/${slug}`}>
@@ -97,32 +124,87 @@ export default function MarketCard({
         </div>
 
         {/* Title */}
-        <p className="text-sm font-['Rajdhani'] font-semibold text-foreground leading-snug line-clamp-2 flex-1">
+        <p className="text-sm font-['Rajdhani'] font-semibold text-foreground leading-snug line-clamp-2">
           {title}
         </p>
 
-        {/* Order Book Buy/Sell Bar Chart */}
-        <div className="h-14 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={orderBookData} margin={{ top: 4, right: 4, bottom: 16, left: 0 }}>
-              <XAxis 
-                dataKey="name" 
-                tick={{ fontSize: 11, fill: "oklch(0.55 0.04 240)", fontFamily: "Rajdhani" }} 
-                axisLine={false}
+        {/* Detailed Price Chart (same as MarketDetail) */}
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-['Orbitron'] font-bold text-foreground tracking-wider">
+              PROBABILITY <span className="neon-cyan">CHART</span>
+            </h3>
+            <div className="flex items-center gap-2 text-[9px] font-['Rajdhani'] tracking-widest">
+              <span className="flex items-center gap-1 text-[oklch(0.75_0.18_145)]">
+                <span className="w-2 h-0.5 bg-[oklch(0.75_0.18_145)] inline-block" /> YES
+              </span>
+              <span className="flex items-center gap-1 text-[oklch(0.65_0.22_15)]">
+                <span className="w-2 h-0.5 bg-[oklch(0.65_0.22_15)] inline-block" /> NO
+              </span>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={140}>
+            <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+              <defs>
+                <linearGradient id={`yesGrad-${slug}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="oklch(0.75 0.18 145)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="oklch(0.75 0.18 145)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id={`noGrad-${slug}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="oklch(0.65 0.22 15)" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="oklch(0.65 0.22 15)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.03 240 / 0.5)" />
+              <XAxis
+                dataKey="time"
+                tick={{ fill: "oklch(0.55 0.04 240)", fontSize: 9, fontFamily: "Rajdhani" }}
                 tickLine={false}
+                axisLine={{ stroke: "oklch(0.22 0.04 240)" }}
               />
-              <YAxis hide domain={[0, 100]} />
-              <Bar dataKey="value" radius={[3, 3, 0, 0]} isAnimationActive={false}>
-                {orderBookData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Bar>
-            </BarChart>
+              <YAxis
+                domain={[0, 100]}
+                tick={{ fill: "oklch(0.55 0.04 240)", fontSize: 9, fontFamily: "Rajdhani" }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(v) => `${v}¢`}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "oklch(0.09 0.015 270)",
+                  border: "1px solid oklch(0.22 0.04 240)",
+                  borderRadius: "4px",
+                  fontFamily: "Rajdhani",
+                  fontSize: "11px",
+                }}
+                labelStyle={{ color: "oklch(0.55 0.04 240)" }}
+                formatter={(val: number, name: string) => [
+                  `${val.toFixed(1)}¢`,
+                  name.toUpperCase(),
+                ]}
+              />
+              <Area
+                type="monotone"
+                dataKey="yes"
+                stroke="oklch(0.75 0.18 145)"
+                strokeWidth={1.5}
+                fill={`url(#yesGrad-${slug})`}
+                dot={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="no"
+                stroke="oklch(0.65 0.22 15)"
+                strokeWidth={1.5}
+                fill={`url(#noGrad-${slug})`}
+                dot={false}
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Prices & Volume */}
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 mt-2">
           <div className="flex gap-2">
             <button className="btn-yes text-xs font-['Rajdhani'] font-bold tracking-wider px-3 py-1 rounded">
               YES {yp}¢

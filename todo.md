@@ -54,4 +54,4 @@
 
 
 ## User Enhancements (Post-Launch)
-- [x] Replace market card sparkline with detailed order book buy/sell graphs (BarChart)
+- [x] Replace market card sparkline with detailed 60-day probability AreaChart (same as MarketDetail)
