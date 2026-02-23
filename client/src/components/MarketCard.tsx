@@ -1,6 +1,6 @@
 import { Clock, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface MarketCardProps {
   id: number;
@@ -61,18 +61,11 @@ export default function MarketCard({
   const np = parseFloat(noPrice);
   const catColor = CATEGORY_COLORS[category] ?? "oklch(0.78 0.18 195)";
 
-  // Build sparkline data
-  const sparkData =
-    priceHistory.length > 0
-      ? [...priceHistory].reverse().map((p) => ({ v: parseFloat(p.yesPrice) }))
-      : Array.from({ length: 12 }, (_, i) => ({
-          v: 50 + Math.sin(i * 0.5) * 10 + (Math.random() - 0.5) * 5,
-        }));
-
-  const trend = sparkData.length > 1
-    ? sparkData[sparkData.length - 1].v - sparkData[0].v
-    : 0;
-  const sparkColor = trend >= 0 ? "oklch(0.75 0.18 145)" : "oklch(0.65 0.22 15)";
+  // Build order book data (buy/sell depth visualization)
+  const orderBookData = [
+    { name: "YES", value: yp, fill: "oklch(0.75 0.18 145)" },
+    { name: "NO", value: np, fill: "oklch(0.65 0.22 15)" },
+  ];
 
   return (
     <Link href={`/markets/${slug}`}>
@@ -108,26 +101,23 @@ export default function MarketCard({
           {title}
         </p>
 
-        {/* Sparkline */}
-        <div className="h-10 w-full">
+        {/* Order Book Buy/Sell Bar Chart */}
+        <div className="h-14 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={sparkData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
-              <defs>
-                <linearGradient id={`sg-${slug}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={sparkColor} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={sparkColor} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <Area
-                type="monotone"
-                dataKey="v"
-                stroke={sparkColor}
-                strokeWidth={1.5}
-                fill={`url(#sg-${slug})`}
-                dot={false}
-                isAnimationActive={false}
+            <BarChart data={orderBookData} margin={{ top: 4, right: 4, bottom: 16, left: 0 }}>
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 11, fill: "oklch(0.55 0.04 240)", fontFamily: "Rajdhani" }} 
+                axisLine={false}
+                tickLine={false}
               />
-            </AreaChart>
+              <YAxis hide domain={[0, 100]} />
+              <Bar dataKey="value" radius={[3, 3, 0, 0]} isAnimationActive={false}>
+                {orderBookData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 

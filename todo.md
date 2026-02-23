@@ -51,3 +51,7 @@
 - [x] Responsive design (mobile hamburger menu)
 - [x] Final demo data seed (17 markets with 60-day price history)
 - [x] Save checkpoint
+
+
+## User Enhancements (Post-Launch)
+- [x] Replace market card sparkline with detailed order book buy/sell graphs (BarChart)
