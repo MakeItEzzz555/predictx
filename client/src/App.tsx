@@ -4,35 +4,51 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import TopNav from "./components/TopNav";
 import Home from "./pages/Home";
+import Markets from "./pages/Markets";
+import MarketDetail from "./pages/MarketDetail";
+import Portfolio from "./pages/Portfolio";
+import Wallet from "./pages/Wallet";
+import Leaderboard from "./pages/Leaderboard";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      <Route path="/" component={Home} />
+      <Route path="/markets" component={Markets} />
+      <Route path="/markets/:slug" component={MarketDetail} />
+      <Route path="/portfolio" component={Portfolio} />
+      <Route path="/wallet" component={Wallet} />
+      <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <Toaster
+            theme="dark"
+            toastOptions={{
+              style: {
+                background: "oklch(0.09 0.015 270)",
+                border: "1px solid oklch(0.22 0.04 240)",
+                color: "oklch(0.95 0.02 200)",
+                fontFamily: "Rajdhani, sans-serif",
+              },
+            }}
+          />
+          <div className="min-h-screen flex flex-col">
+            <TopNav />
+            <main className="flex-1">
+              <Router />
+            </main>
+          </div>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
