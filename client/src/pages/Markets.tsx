@@ -59,15 +59,15 @@ export default function Markets() {
   );
 
   return (
-    <div className="min-h-screen py-6 sm:py-8">
-      <div className="flex gap-0 h-[calc(100vh-120px)]">
+    <div className="min-h-screen">
+      <div className="flex gap-0">
         {/* Sidebar - hidden on mobile */}
-        <div className="hidden lg:block">
+        <div className="hidden md:block">
           <MarketSidebar selectedCategory={category} selectedSubcategory={subcategory ?? undefined} />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-screen">
           <div className="container py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

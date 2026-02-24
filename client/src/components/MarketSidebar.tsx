@@ -103,7 +103,7 @@ export default function MarketSidebar({ selectedCategory, selectedSubcategory }:
   };
 
   return (
-    <div className="w-48 bg-[oklch(0.08_0.012_270)] border-r border-border p-4 space-y-2 max-h-[calc(100vh-120px)] overflow-y-auto">
+    <div className="w-56 bg-[oklch(0.08_0.012_270)] border-r border-border p-4 space-y-2 h-screen overflow-y-auto sticky top-0">
       {/* All Markets Link */}
       <Link href="/markets">
         <div className={`px-3 py-2 rounded text-sm font-['Rajdhani'] font-semibold tracking-wide cursor-pointer transition-colors ${
