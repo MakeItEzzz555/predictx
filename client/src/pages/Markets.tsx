@@ -1,5 +1,6 @@
-import { trpc } from "@/lib/trpc";
 import MarketCard from "@/components/MarketCard";
+import TrendingMarketSlider from "@/components/TrendingMarketSlider";
+import { trpc } from "@/lib/trpc";
 import { BarChart2, Flame, Search, Sparkles, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearch } from "wouter";
@@ -53,63 +54,68 @@ export default function Markets() {
   );
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-6 sm:py-8">
       <div className="container">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-['Orbitron'] font-bold text-foreground">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-['Orbitron'] font-bold text-foreground">
             PREDICTION <span className="neon-cyan">MARKETS</span>
           </h1>
           <div className="h-[1px] w-32 bg-gradient-to-r from-[oklch(0.78_0.18_195)] to-transparent mt-2" />
         </div>
 
         {/* Search */}
-        <div className="relative mb-6">
+        <div className="relative mb-4 sm:mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="SEARCH MARKETS..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[oklch(0.09_0.015_270)] border border-border text-sm font-['Rajdhani'] tracking-wide text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[oklch(0.78_0.18_195/0.5)] rounded transition-colors"
+            className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-[oklch(0.09_0.015_270)] border border-border text-xs sm:text-sm font-['Rajdhani'] tracking-wide text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[oklch(0.78_0.18_195/0.5)] rounded transition-colors"
           />
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-3 sm:mb-4 scrollbar-none">
           {CATEGORIES.map(({ id, label, icon }) => (
             <button
               key={id}
               onClick={() => setCategory(id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-['Rajdhani'] font-semibold tracking-widest whitespace-nowrap transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-['Rajdhani'] font-semibold tracking-widest whitespace-nowrap transition-all ${
                 category === id
                   ? "bg-[oklch(0.78_0.18_195/0.15)] border border-[oklch(0.78_0.18_195/0.5)] text-[oklch(0.78_0.18_195)]"
                   : "border border-border text-muted-foreground hover:text-foreground hover:border-[oklch(0.78_0.18_195/0.3)]"
               }`}
             >
               <span>{icon}</span>
-              {label}
+              <span className="hidden xs:inline">{label}</span>
             </button>
           ))}
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mb-6 sm:mb-8">
           {FILTERS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setFilter(id as FilterType)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-['Rajdhani'] font-semibold tracking-widest transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-['Rajdhani'] font-semibold tracking-widest transition-all ${
                 filter === id
                   ? "bg-[oklch(0.72_0.22_330/0.15)] border border-[oklch(0.72_0.22_330/0.5)] text-[oklch(0.72_0.22_330)]"
                   : "border border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="w-3 h-3" />
-              {label}
+              <span className="hidden xs:inline">{label}</span>
             </button>
           ))}
         </div>
+
+        {/* Trending Market Slider */}
+        {!isLoading && filtered && filtered.length > 0 && (
+          <TrendingMarketSlider totalMarketsCount={filtered.length} />
+        )}
 
         {/* Markets Grid */}
         {isLoading ? (
@@ -129,10 +135,8 @@ export default function Markets() {
           </div>
         ) : filtered && filtered.length > 0 ? (
           <>
-            <p className="text-xs text-muted-foreground font-['Rajdhani'] tracking-wide mb-4">
-              {filtered.length} MARKET{filtered.length !== 1 ? "S" : ""} FOUND
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Note: Market count is now shown in the slider */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {filtered.map((m) => (
                 <MarketCard
                   key={m.id}

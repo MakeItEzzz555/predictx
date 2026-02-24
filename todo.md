@@ -55,3 +55,10 @@
 
 ## User Enhancements (Post-Launch)
 - [x] Replace market card sparkline with detailed 60-day probability AreaChart (same as MarketDetail)
+
+
+## Latest Fixes & Enhancements
+- [x] Fix responsive design sitewide (TopNav text overflow on mobile)
+- [x] Add trending market slider component with auto-rotate every 10 seconds
+- [x] Slider shows live graph updates for each trade
+- [x] Display market count "X Markets Found" above slider
