@@ -67,3 +67,8 @@
 ## Bug Fixes
 - [x] Mark top 6 trending markets as featured in seed script
 - [x] Verify featured markets display on Home page
+
+
+## New Features (Post-Launch)
+- [x] Add Kalshi-style left sidebar with expandable subcategories on Markets page
+- [x] Wire up sidebar filtering to show markets by subcategory

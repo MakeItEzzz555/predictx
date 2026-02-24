@@ -1,5 +1,6 @@
 import MarketCard from "@/components/MarketCard";
 import TrendingMarketSlider from "@/components/TrendingMarketSlider";
+import MarketSidebar from "@/components/MarketSidebar";
 import { trpc } from "@/lib/trpc";
 import { BarChart2, Flame, Search, Sparkles, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -30,15 +31,19 @@ export default function Markets() {
   const search = useSearch();
   const params = new URLSearchParams(search);
   const initialCategory = params.get("category") ?? "all";
+  const initialSubcategory = params.get("subcategory");
 
   const [category, setCategory] = useState(initialCategory);
+  const [subcategory, setSubcategory] = useState(initialSubcategory);
   const [filter, setFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const p = new URLSearchParams(search);
     const cat = p.get("category");
+    const subcat = p.get("subcategory");
     if (cat) setCategory(cat);
+    if (subcat) setSubcategory(subcat);
   }, [search]);
 
   const { data: markets, isLoading } = trpc.markets.list.useQuery({
@@ -55,7 +60,15 @@ export default function Markets() {
 
   return (
     <div className="min-h-screen py-6 sm:py-8">
-      <div className="container">
+      <div className="flex gap-0 h-[calc(100vh-120px)]">
+        {/* Sidebar - hidden on mobile */}
+        <div className="hidden lg:block">
+          <MarketSidebar selectedCategory={category} selectedSubcategory={subcategory ?? undefined} />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="container py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-xl sm:text-2xl font-['Orbitron'] font-bold text-foreground">
@@ -160,6 +173,8 @@ export default function Markets() {
             <p className="text-xs mt-2 opacity-60">Try a different category or filter</p>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );
