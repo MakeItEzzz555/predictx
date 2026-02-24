@@ -37,6 +37,15 @@ export default function TrendingMarketSlider({
     return () => clearInterval(interval);
   }, [autoRotate, markets.length]);
 
+  // Resume auto-rotate after 5 seconds of manual interaction
+  useEffect(() => {
+    if (!autoRotate) {
+      const timeout = setTimeout(() => setAutoRotate(true), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [autoRotate]);
+
+  // Early returns AFTER all hooks
   if (markets.length === 0) {
     return null;
   }
@@ -67,14 +76,6 @@ export default function TrendingMarketSlider({
     setAutoRotate(false);
     setCurrentIndex((prev) => (prev + 1) % markets.length);
   };
-
-  // Resume auto-rotate after 5 seconds of manual interaction
-  useEffect(() => {
-    if (!autoRotate) {
-      const timeout = setTimeout(() => setAutoRotate(true), 5000);
-      return () => clearTimeout(timeout);
-    }
-  }, [autoRotate]);
 
   const formatDate = (d: Date | string) => {
     const date = d instanceof Date ? d : new Date(d);
