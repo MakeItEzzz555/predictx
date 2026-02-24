@@ -20,6 +20,7 @@ const markets = [
     closesAt: new Date("2028-11-05"),
     resolutionCriteria: "Resolves YES if the Democratic Party candidate is declared the winner of the 2028 US Presidential Election by major news organizations.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -34,6 +35,7 @@ const markets = [
     closesAt: new Date("2029-01-01"),
     resolutionCriteria: "Resolves YES if Labour wins the most seats in the next UK General Election.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   {
@@ -48,6 +50,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if a formal UN General Assembly resolution to reform the Security Council passes with 2/3 majority.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   // Sports
@@ -63,6 +66,7 @@ const markets = [
     closesAt: new Date("2026-06-30"),
     resolutionCriteria: "Resolves YES if the LA Lakers are crowned NBA Champions at the end of the 2025-26 season.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -77,6 +81,7 @@ const markets = [
     closesAt: new Date("2026-07-19"),
     resolutionCriteria: "Resolves YES if Brazil wins the final match of the 2026 FIFA World Cup.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -91,6 +96,7 @@ const markets = [
     closesAt: new Date("2026-07-12"),
     resolutionCriteria: "Resolves YES if Novak Djokovic wins the Men's Singles title at Wimbledon 2026.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   // Crypto
@@ -106,6 +112,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if the BTC/USD price on Coinbase or Binance closes above $150,000 at any point before December 31, 2026.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -120,6 +127,7 @@ const markets = [
     closesAt: new Date("2026-06-30"),
     resolutionCriteria: "Resolves YES if a spot Ethereum ETF begins trading on a major EU exchange by June 30, 2026.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   {
@@ -134,6 +142,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if SOL ranks #3 or higher by market cap on CoinMarketCap at any point during 2026.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   // Economics
@@ -149,6 +158,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if the BEA reports two consecutive quarters of negative real GDP growth in 2026.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -163,6 +173,7 @@ const markets = [
     closesAt: new Date("2026-06-30"),
     resolutionCriteria: "Resolves YES if the FOMC votes to lower the target federal funds rate at any meeting in April, May, or June 2026.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   // Climate
@@ -178,6 +189,7 @@ const markets = [
     closesAt: new Date("2027-03-01"),
     resolutionCriteria: "Resolves YES if NASA GISS or NOAA confirms 2026 as the warmest year in their global surface temperature record.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   {
@@ -192,6 +204,7 @@ const markets = [
     closesAt: new Date("2026-10-01"),
     resolutionCriteria: "Resolves YES if NSIDC reports a new all-time minimum Arctic sea ice extent in September 2026.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   // Tech
@@ -207,6 +220,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if a major AI lab (OpenAI, Google DeepMind, Anthropic, or Meta) makes an official public announcement claiming AGI has been achieved.",
     isTrending: true,
+    isFeatured: true,
     status: "open",
   },
   {
@@ -221,6 +235,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if Apple officially releases and begins selling a standalone AR glasses product in 2026.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
   // Health
@@ -236,6 +251,7 @@ const markets = [
     closesAt: new Date("2026-12-31"),
     resolutionCriteria: "Resolves YES if the FDA grants full (not emergency) approval to any mRNA-based cancer vaccine by December 31, 2026.",
     isTrending: true,
+    isFeatured: false,
     status: "open",
   },
   // Entertainment
@@ -251,6 +267,7 @@ const markets = [
     closesAt: new Date("2027-03-31"),
     resolutionCriteria: "Resolves YES if the Best Picture winner at the 99th Academy Awards is publicly confirmed to have used AI tools in its production.",
     isTrending: false,
+    isFeatured: false,
     status: "open",
   },
 ];
@@ -291,8 +308,8 @@ try {
     
     // Insert market
     const [result] = await connection.execute(
-      `INSERT INTO markets (slug, title, description, category, yesPrice, noPrice, volume, openInterest, closesAt, resolutionCriteria, isTrending, status, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      `INSERT INTO markets (slug, title, description, category, yesPrice, noPrice, volume, openInterest, closesAt, resolutionCriteria, isTrending, isFeatured, status, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
       [
         market.slug,
         market.title,
@@ -305,6 +322,7 @@ try {
         market.closesAt,
         market.resolutionCriteria,
         market.isTrending ? 1 : 0,
+        market.isFeatured ? 1 : 0,
         market.status,
       ]
     );

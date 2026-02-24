@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE markets SET isFeatured = 1 WHERE slug IN ('us-president-2028-democrat', 'nba-championship-2026-lakers', 'world-cup-2026-brazil', 'bitcoin-100k-2026', 'solana-top3-marketcap-2026', 'us-recession-2026', 'agi-announced-2026')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2YXgCaM4rCsBQDw.root --database 5TtjmjBzHzyaQauJeh8WQH --execute UPDATE markets SET isFeatured = 1 WHERE slug IN ('us-president-2028-democrat', 'nba-championship-2026-lakers', 'world-cup-2026-brazil', 'bitcoin-100k-2026', 'solana-top3-marketcap-2026', 'us-recession-2026', 'agi-announced-2026')",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 416
+}

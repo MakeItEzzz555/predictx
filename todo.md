@@ -62,3 +62,8 @@
 - [x] Add trending market slider component with auto-rotate every 10 seconds
 - [x] Slider shows live graph updates for each trade
 - [x] Display market count "X Markets Found" above slider
+
+
+## Bug Fixes
+- [x] Mark top 6 trending markets as featured in seed script
+- [x] Verify featured markets display on Home page
